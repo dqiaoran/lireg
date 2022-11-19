@@ -27,7 +27,12 @@ library(Matrix)
 #'
 #'@export
 #'
-lireg <- function(Y, X){
+lireg_model <- function(formula){
+  df = get_all_vars(formula)
+
+  #assume that this is a correct formula
+  Y = df[[1]]
+  X = df[,2:ncol(df)]
 
   n = nrow(X)
   p = ncol(X)

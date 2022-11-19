@@ -1,0 +1,19 @@
+---
+title: "Examples_lireg"
+author: "Qiaoran Dong"
+date: "2022-11-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+input<-mtcars
+input$am <- as.factor(input$am)
+levels(input$am) <-c("AT", "MT")
+```
+
+```{r linear regression}
+fit1<-lm(input$mpg~input$am)
+summary(fit1)
+fit2 = lireg
+```
