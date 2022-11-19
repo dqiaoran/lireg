@@ -7,7 +7,7 @@ Maintainer: The package maintainer <dqiaoran@umich.edu>
 Description: The package contains lireg() which is used to fit linear regression
     models. It can be used to carry out simple linear regression or multiple
     linear regression on models without interaction terms or polynomial terms.
-License: What license is it under?
+License: GNU General Public License Version 3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
