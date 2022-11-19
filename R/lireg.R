@@ -43,12 +43,7 @@ lireg_model <- function(formula){
             design_mat = matrix(NA))
   class(lg) = "lireg"
 
-  if(n < p){
-    return("Error(1)")
-  }else{
-    lg = fit_mlr(lg)
-  }
-
+  lg = fit_mlr(lg)
   return(lg)
 }
 
