@@ -12,8 +12,6 @@
 #   Check Package:             'Ctrl + Shift + E'
 #   Test Package:              'Ctrl + Shift + T'
 
-library(Matrix)
-
 #'lireg
 #'
 #'Linear Regression Model
@@ -27,7 +25,7 @@ library(Matrix)
 #'
 #'@export
 #'
-lireg_model <- function(formula){
+lireg <- function(formula){
   df = get_all_vars(formula)
 
   #assume that this is a correct formula

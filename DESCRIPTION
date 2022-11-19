@@ -1,11 +1,12 @@
 Package: lireg
 Type: Package
-Title: Simple Linear Regression
+Title: Linear Regression Package
 Version: 0.1.0
 Author: Qiaoran Dong
 Maintainer: The package maintainer <dqiaoran@umich.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: The package contains lireg() which is used to fit linear regression
+    models. It can be used to carry out simple linear regression or multiple
+    linear regression on models without interaction terms or polynomial terms.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
