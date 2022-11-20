@@ -12,6 +12,8 @@
 #   Check Package:             'Ctrl + Shift + E'
 #   Test Package:              'Ctrl + Shift + T'
 
+library(Matrix)
+
 #'lireg
 #'
 #'Linear Regression Model
@@ -22,6 +24,7 @@
 #'
 #'@examples
 #'
+#'@import Matrix
 #'
 #'@export
 #'
@@ -40,14 +43,13 @@ lireg <- function(formula){
     p = ncol(X)
   }
 
-  lg = list(response = Y, regressor = X, coefficients = NULL,
-            num_cases = n, residuals = NULL,
-            rank = 0, SSE = 0, SSR = 0, SSY = 0, df = 0,
-            design_mat = NULL)
+  lg = list(call = match.call(), response = Y, regressor = X,
+            coefficients = NULL, num_cases = n, residuals = NULL,
+            rank = 0, SSE = 0, SSR = 0, SSY = 0, df = 0, design_mat = NULL)
   class(lg) = "lireg"
 
   lg = fit_mlr(lg)
-  return(lg)
+  print(lg)
 }
 
 fit_mlr <- function(object){
@@ -64,12 +66,12 @@ fit_mlr <- function(object){
   beta = solve(eva_mat)%*%t(z$design_mat)%*%Y
   z$coefficients = beta
 
-  Y_fitted = beta %*% z$design_mat #fitted values
+  Y_fitted = z$design_mat %*% beta #fitted values
 
   p = length(beta)
   n = z$num_cases
 
-  z$residuals = Y - beta %*% z$design_mat #residuals
+  z$residuals = Y - z$design_mat %*% beta #residuals
   z$df = n - p
 
   y_bar = mean(Y)
@@ -79,6 +81,20 @@ fit_mlr <- function(object){
 
   return(z)
 }
+
+
+print.lireg <- function(x, digits = max(3L, getOption("digits") - 3L)){
+  cat("\nCall:\n",
+      paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
+  if(length(x$coefficients)) {
+    cat("Coefficients:\n")
+    print.default(format(x$coefficients, digits = digits),
+                  print.gap = 2L, quote = FALSE)
+  } else cat("No coefficients\n")
+  cat("\n")
+  invisible(x)
+}
+
 
 summary.lireg <- function(object){
   z = object
@@ -118,4 +134,11 @@ summary.lireg <- function(object){
   Rsq = SSR / SSY
   Rsq_adj = 1 - SSE/(n-p)/SSY/(n-1)
 
+  print(ans)
 }
+
+
+print.summary.lireg <- function(x){
+
+}
+
