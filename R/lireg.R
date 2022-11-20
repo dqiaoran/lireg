@@ -35,20 +35,26 @@ lireg <- function(formula){
   Y = df[[1]]
   X = df[,2:ncol(df)]
 
+  cn = colnames(df)
+
   if(is.null(nrow(X))){
     n = length(X)
-    p = 1
+    p = 2
   }else{
     n = nrow(X)
-    p = ncol(X)
+    p = ncol(X) + 1
   }
 
-  lg = list(call = match.call(), response = Y, regressor = X,
-            coefficients = NULL, num_cases = n, residuals = NULL,
-            rank = 0, SSE = 0, SSR = 0, SSY = 0, df = 0, design_mat = NULL)
+  lg = list(call = match.call(), terms = terms(formula),
+            response = Y, regressor = X,
+            coefficients = rep(0, p), num_cases = n, num_vars = p,
+            residuals = NULL, rank = 0, SSE = 0, SSR = 0, SSY = 0,
+            design_mat = NULL)
   class(lg) = "lireg"
 
   lg = fit_mlr(lg)
+  names(lg$coefficients) = c("(Intercept)", cn[2:ncol(df)])
+
   print(lg)
 }
 
@@ -60,24 +66,23 @@ fit_mlr <- function(object){
   eva_mat = t(z$design_mat) %*% z$design_mat
   z$rank = rankMatrix(eva_mat)
 
-  if(z$rank < ncol(eva_mat)) stop("singular fit encountered")
+  if(z$rank < z$p) stop("singular fit encountered")
 
   #Assume that the design matrix is not singular
   beta = solve(eva_mat)%*%t(z$design_mat)%*%Y
-  z$coefficients = beta
+  z$coefficients = as.vector(beta)
 
   Y_fitted = z$design_mat %*% beta #fitted values
 
-  p = length(beta)
+  p = z$num_vars
   n = z$num_cases
 
   z$residuals = Y - z$design_mat %*% beta #residuals
-  z$df = n - p
 
   y_bar = mean(Y)
-  z$SSY = sum((Y - y_bar)^2)
-  z$SSE = sum(z$residuals^2)
-  z$SSR = z$SSY - z$SSE
+  z$SSY = c(value = sum((Y - y_bar)^2), df = n-1)
+  z$SSE = c(value = sum(z$residuals^2), df = n-p)
+  z$SSR = c(value = z$SSY - z$SSE, df = p-1)
 
   return(z)
 }
@@ -96,49 +101,65 @@ print.lireg <- function(x, digits = max(3L, getOption("digits") - 3L)){
 }
 
 
-summary.lireg <- function(object){
-  z = object
-  sigma_est = z$SSE / z$df
-  beta_var = sigma_est * solve(t(z$design_mat)%*%z$design_mat)
-
+summary.lireg <- function(lg){
+  sigma_est = lg$SSE[1L] / lg$SSE[2L]
+  se = sqrt(as.vector(sigma_est * solve(t(lg$design_mat) %*% lg$design_mat)))
   #Assume that p is non-zero
-  est <- z$coefficients
-  tval <- est/se #where is se?
-  ans <- z[c("call", "terms")]
-  ans$residuals <- z$residuals
-  ans$coefficients <-
-    cbind(est, se, tval, 2*pt(abs(tval), rdf, lower.tail = FALSE))
-  dimnames(ans$coefficients) <-
-    list(names(z$coefficients),
+  est = lg$coefficients
+  tval = est/se
+
+  ans = lg[c("call", "terms")]
+  class(ans) = "summary.lireg"
+  ans$residuals <- lg$residuals
+  ans$aliased <- coef(lg)
+  ans$coefficients =
+    cbind(est, se, tval, 2*pt(abs(tval), lg$SSE["df"], lower.tail = FALSE))
+  dimnames(ans$coefficients) =
+    list(names(lg$coefficients),
          c("Estimate", "Std. Error", "t value", "Pr(>|t|)"))
-  ans$sigma <- sqrt(sigma_est)
-  ans$df <- c(p, rdf, NCOL(Qr$qr))
+  ans$sigma = sqrt(sigma_est)
+  ans$df = c(lg$num_vars, lg$num_cases - lg$num_vars)
 
-
-  #Perform t-test on a vector of coefficients
-  pt(beta/sqrt(beta_var))
-  if(pt<0.05){
-
-  }else{
-
-  }
-
-  #Perform global F-test
-  pf(SSR/(p-1)/SSE/(n-p), p-1, n-p)
-  if(pf<0.05){
-
-  }else{
-
-  }
-
-  Rsq = SSR / SSY
-  Rsq_adj = 1 - SSE/(n-p)/SSY/(n-1)
+  ans$Rsq = lg$SSR["value"] / lg$SSY["value"]
+  ans$Rsq_adj = 1 - lg$SSE[1L] / lg$SSE[2L] / lg$SSY[1L] / lg$SSY[2L]
+  ans$fstat <- c(value = (lg$SSR["value"]/lg$SSR["df"]) / sigma_est,
+                      numdf = lg$SSR["df"], dendf = z$SSE["df"])
 
   print(ans)
 }
 
 
-print.summary.lireg <- function(x){
+print.summary.lireg <- function(ans, digits = max(3L, getOption("digits") - 3L),
+                                signif.stars = getOption("show.signif.stars")){
+  cat("\nCall:\n",
+      paste(deparse(ans$call), sep="\n", collapse = "\n"), "\n\n", sep = "")
+  resid <- ans$residuals
+  rdf <- ans$df[2L]
+  cat("Residuals:\n", sep = "")
 
+  #assume that number of data is greater than 5
+    nam <- c("Min", "1Q", "Median", "3Q", "Max")
+    zz <- zapsmall(quantile(resid), digits + 1L)
+    rq <- structure(zz, names = nam)
+    print(rq, digits = digits)
+
+    cat("\nCoefficients:\n")
+    coefs <- ans$coefficients
+    printCoefmat(coefs, digits = digits, signif.stars = signif.stars)
+
+  cat("\nResidual standard error:",
+      format(signif(ans$sigma, digits)), "on", rdf, "degrees of freedom")
+
+  if (!is.null(x$fstatistic)) {
+    cat("Multiple R-squared: ", formatC(ans$Rsq, digits = digits))
+    cat(",\tAdjusted R-squared: ",formatC(ans$Rsq_adj, digits = digits),
+        "\nF-statistic:", formatC(ans$fstat[1L], digits = digits),
+        "on", ans$fstat[2L], "and",
+        ans$fstat[3L], "DF,  p-value:",
+        format.pval(pf(ans$fstat[1L], ans$fstat[2L],
+                       ans$fstat[3L], lower.tail = FALSE), digits = digits))
+    cat("\n")
+  }
+  cat("\n")
+  invisible(x)
 }
-
