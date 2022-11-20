@@ -1,6 +1,6 @@
 # Linear Regression
 #
-# The package is designed to do a simple linear regression
+# The package is used to fit linear regression model
 #
 # You can learn more about package authoring with RStudio at:
 #
@@ -18,7 +18,7 @@
 #'
 #'@param formula
 #'
-#'@return a list of class "Linear Regression"
+#'@return a list of class "lireg"
 #'
 #'@examples
 #'
@@ -26,19 +26,24 @@
 #'@export
 #'
 lireg <- function(formula){
-  df = get_all_vars(formula)
+  df = model.frame(formula)
 
   #assume that this is a correct formula
   Y = df[[1]]
   X = df[,2:ncol(df)]
 
-  n = nrow(X)
-  p = ncol(X)
-  empty = rep(0, n)
-  lg = list(response = Y, regressor = X, coefficients = empty,
-            num_cases = n, residuals = empty,
+  if(is.null(nrow(X))){
+    n = length(X)
+    p = 1
+  }else{
+    n = nrow(X)
+    p = ncol(X)
+  }
+
+  lg = list(response = Y, regressor = X, coefficients = NULL,
+            num_cases = n, residuals = NULL,
             rank = 0, SSE = 0, SSR = 0, SSY = 0, df = 0,
-            design_mat = matrix(NA))
+            design_mat = NULL)
   class(lg) = "lireg"
 
   lg = fit_mlr(lg)
@@ -49,7 +54,7 @@ fit_mlr <- function(object){
   z = object
   X = z$regressor
   Y = z$response
-  z$design_mat = cbind(rep(1, nrow(X)), X)
+  z$design_mat = cbind(rep(1, z$num_cases), X)
   eva_mat = t(z$design_mat) %*% z$design_mat
   z$rank = rankMatrix(eva_mat)
 
@@ -75,7 +80,7 @@ fit_mlr <- function(object){
   return(z)
 }
 
-summary.lireg <- function(object, correlation = FALSE){
+summary.lireg <- function(object){
   z = object
   sigma_est = z$SSE / z$df
   beta_var = sigma_est * solve(t(z$design_mat)%*%z$design_mat)

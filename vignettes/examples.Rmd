@@ -13,7 +13,7 @@ levels(input$am) <-c("AT", "MT")
 ```
 
 ```{r linear regression}
-fit1<-lm(input$mpg~input$am)
+fit1<-lm(input$mpg~input$am+input$disp)
 summary(fit1)
 fit2 = lireg
 ```
