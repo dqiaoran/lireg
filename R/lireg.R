@@ -1,6 +1,6 @@
 # Linear Regression
 #
-# The package is used to fit linear regression model
+# The package is used to fit linear regression model.
 #
 # You can learn more about package authoring with RStudio at:
 #
@@ -15,7 +15,6 @@
 library(Matrix)
 
 #'lireg
-#'
 #'Linear Regression Model
 #'
 #'@param formula
@@ -23,11 +22,6 @@ library(Matrix)
 #'@return a list of class "lireg"
 #'
 #'@examples
-#'
-#'@import Matrix
-#'
-#'@export
-#'
 lireg <- function(formula){
   df = model.frame(formula)
 
@@ -66,8 +60,6 @@ fit_mlr <- function(object){
   eva_mat = t(z$design_mat) %*% z$design_mat
   z$rank = rankMatrix(eva_mat)
 
-  if(z$rank < z$p) stop("singular fit encountered")
-
   #Assume that the design matrix is not singular
   beta = solve(eva_mat)%*%t(z$design_mat)%*%Y
   z$coefficients = as.vector(beta)
@@ -87,7 +79,6 @@ fit_mlr <- function(object){
   return(z)
 }
 
-
 print.lireg <- function(x, digits = max(3L, getOption("digits") - 3L)){
   cat("\nCall:\n",
       paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
@@ -100,16 +91,16 @@ print.lireg <- function(x, digits = max(3L, getOption("digits") - 3L)){
   invisible(x)
 }
 
-
-summary.lireg <- function(lg){
+summary.lireg <- function(object){
+  lg = object
   sigma_est = lg$SSE[1L] / lg$SSE[2L]
-  se = sqrt(as.vector(sigma_est * solve(t(lg$design_mat) %*% lg$design_mat)))
+  se = sqrt(diag(sigma_est * solve(t(lg$design_mat) %*% lg$design_mat)))
   #Assume that p is non-zero
   est = lg$coefficients
   tval = est/se
 
   ans = lg[c("call", "terms")]
-  class(ans) = "summary.lireg"
+  class(ans) = "summary_lireg"
   ans$residuals <- lg$residuals
   ans$aliased <- coef(lg)
   ans$coefficients =
@@ -124,13 +115,12 @@ summary.lireg <- function(lg){
   ans$Rsq_adj = 1 - lg$SSE[1L] / lg$SSE[2L] / lg$SSY[1L] / lg$SSY[2L]
   ans$fstat <- c(value = (lg$SSR["value"]/lg$SSR["df"]) / sigma_est,
                       numdf = lg$SSR["df"], dendf = z$SSE["df"])
-
   print(ans)
 }
 
-
-print.summary.lireg <- function(ans, digits = max(3L, getOption("digits") - 3L),
+print.summary.lireg <- function(x, digits = max(3L, getOption("digits") - 3L),
                                 signif.stars = getOption("show.signif.stars")){
+  ans = x
   cat("\nCall:\n",
       paste(deparse(ans$call), sep="\n", collapse = "\n"), "\n\n", sep = "")
   resid <- ans$residuals

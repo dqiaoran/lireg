@@ -2,7 +2,8 @@
 % Please edit documentation in R/lireg.R
 \name{lireg}
 \alias{lireg}
-\title{lireg}
+\title{lireg
+Linear Regression Model}
 \usage{
 lireg(formula)
 }
@@ -13,5 +14,6 @@ lireg(formula)
 a list of class "lireg"
 }
 \description{
+lireg
 Linear Regression Model
 }
