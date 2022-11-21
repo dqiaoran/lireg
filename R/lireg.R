@@ -74,7 +74,7 @@ fit_mlr <- function(object){
   y_bar = mean(Y)
   z$SSY = c(value = sum((Y - y_bar)^2), df = n-1)
   z$SSE = c(value = sum(z$residuals^2), df = n-p)
-  z$SSR = c(value = z$SSY - z$SSE, df = p-1)
+  z$SSR = c(z$SSY["value"] - z$SSE["value"], df = p-1)
 
   return(z)
 }
@@ -100,7 +100,7 @@ summary.lireg <- function(object){
   tval = est/se
 
   ans = lg[c("call", "terms")]
-  class(ans) = "summary_lireg"
+  class(ans) = "summary.lireg"
   ans$residuals <- lg$residuals
   ans$aliased <- coef(lg)
   ans$coefficients =
@@ -113,8 +113,8 @@ summary.lireg <- function(object){
 
   ans$Rsq = lg$SSR["value"] / lg$SSY["value"]
   ans$Rsq_adj = 1 - lg$SSE[1L] / lg$SSE[2L] / lg$SSY[1L] / lg$SSY[2L]
-  ans$fstat <- c(value = (lg$SSR["value"]/lg$SSR["df"]) / sigma_est,
-                      numdf = lg$SSR["df"], dendf = z$SSE["df"])
+  ans$fstat <- c(value = lg$SSR["value"] / lg$SSR["df"] / sigma_est,
+                      numdf = lg$SSR["df"], dendf = lg$SSE["df"])
   print(ans)
 }
 
@@ -140,8 +140,8 @@ print.summary.lireg <- function(x, digits = max(3L, getOption("digits") - 3L),
   cat("\nResidual standard error:",
       format(signif(ans$sigma, digits)), "on", rdf, "degrees of freedom")
 
-  if (!is.null(x$fstatistic)) {
-    cat("Multiple R-squared: ", formatC(ans$Rsq, digits = digits))
+  if (!is.null(ans$fstat)) {
+    cat("\nMultiple R-squared: ", formatC(ans$Rsq, digits = digits))
     cat(",\tAdjusted R-squared: ",formatC(ans$Rsq_adj, digits = digits),
         "\nF-statistic:", formatC(ans$fstat[1L], digits = digits),
         "on", ans$fstat[2L], "and",
