@@ -91,7 +91,7 @@ print.lireg <- function(x, digits = max(3L, getOption("digits") - 3L)){
   invisible(x)
 }
 
-summary.lireg <- function(object){
+summary.lireg <- function(object, ...){
   lg = object
   sigma_est = lg$SSE[1L] / lg$SSE[2L]
   se = sqrt(diag(sigma_est * solve(t(lg$design_mat) %*% lg$design_mat)))

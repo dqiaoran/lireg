@@ -5,13 +5,15 @@
 \alias{print.summary.lireg}
 \title{Summarizing Linear Regression Model}
 \usage{
-\method{summary}{lireg}(object)
+\method{summary}{lireg}(object, ...)
 
-\method{print}{summary.lireg}(x, digits = max(3, getOption("digits") - 3))
+\method{print}{summary.lireg}(x, digits = max(3L, getOption("digits") - 3L),
+                   signif.stars = getOption("show.signif.stars"))
 }
 \arguments{
   \item{object}{an object of class \code{"lireg"}, usually, a result of a
     call to \code{\link{lireg}}.}
+  \item{\dots}{further arguments passed to or from other methods.}
 }
 \description{
 \code{summary} method for class \code{"lireg"}.

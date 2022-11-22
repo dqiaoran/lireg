@@ -1,6 +1,6 @@
 \name{lireg}
 \alias{lireg}
-%\alias{print.lireg}
+\alias{print.lireg}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Linear Regression Model}
