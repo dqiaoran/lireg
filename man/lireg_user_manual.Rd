@@ -29,15 +29,15 @@ lireg(formula)
 
   \item{call}{the matched call.}
   \item{terms}{the \code{\link{terms}} object used.}
-  \item{response}{the vector of the response variable}
-  \item{regressor}{the vector of regressors}
-  \item{coefficients}{a named vector of coefficients}
-  \item{num_cases}{total number of observations}
+  \item{response}{the vector of the response variable.}
+  \item{regressor}{the vector of regressors.}
+  \item{coefficients}{a named vector of coefficients.}
+  \item{num_cases}{total number of observations.}
   \item{residuals}{the residuals, that is response minus fitted values.}
   \item{rank}{the numeric rank of the fitted linear model.}
-  \item{SSE}{a 2-vector storing value and degree of freedom of Residual Sum of Squares}
-  \item{SSR}{a 2-vector storing value and degree of freedom of Regression Sum of Squares}
-  \item{SSY}{a 2-vector storing value and degree of freedom of Total Sum of Squares}
+  \item{SSE}{a 2-vector storing value and degree of freedom of Residual Sum of Squares.}
+  \item{SSR}{a 2-vector storing value and degree of freedom of Regression Sum of Squares.}
+  \item{SSY}{a 2-vector storing value and degree of freedom of Total Sum of Squares.}
   \item{Y_fitted}{the fitted mean values.}
 }
 
