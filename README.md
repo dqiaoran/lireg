@@ -5,4 +5,5 @@ The package is designed to partially reproduce the output of R base function *lm
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/dqiaoran/lireg/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dqiaoran/lireg/actions/workflows/R-CMD-check.yaml) 
+[![Codecov test coverage](https://codecov.io/gh/dqiaoran/lireg/branch/main/graph/badge.svg)](https://app.codecov.io/gh/dqiaoran/lireg?branch=main)
 <!-- badges: end -->
