@@ -5,15 +5,53 @@ date: "2022-11-19"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-input<-mtcars
-input$am <- as.factor(input$am)
-levels(input$am) <-c("AT", "MT")
+### Linear Regression fitting using *Lireg()*
+
+Linear Regression Model is one of the most commonly used statistic models in data analyzation. Here is a step by step tutorial on how to use Lireg package to fit linear regression model and do some basic analysis on the data. The R built-in dataset *mtcars* is used in the following example; more details about the dataset can be found at <https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html>.
+
+```{r setup}
+library(lireg)
+library(bench) #for benchmarking in section (3)
 ```
 
-```{r linear regression}
-fit1<-lm(input$mpg~input$am+input$disp)
-summary(fit1)
-fit2 = lireg
+### (1) Simple Linear Regression: Example
+
+Suppose that we are interested in how displacement of a car affects its fuel consumption. From the question of interest we can identify two major variables in the data: *mtcars\$mpg*(miles per gallon), the response variable, and *mtcars\$disp*(displacement in cubic inch), the explanatory variable. We plug the formula into *lireg()* function and store it in the variable *lg*:
+
+```{r formula and lireg}
+lg = lireg(mtcars$mpg ~ mtcars$disp) # '~' represents 'relation'
+```
+
+To check the estimated coefficients in the linear model, there are three more  options: 1. print(lg) 2. coef(lg) 3. lg\$coefficients
+
+```{r coefficients}
+print(lg)
+coef(lg)
+lg$coefficients
+```
+The output shows that the estimated intercept is 29.60, and the slope is -0.04. The next step is to figure out whether displacement significantly affects fuel consumption or not. The _summary()_ function provides the information we need:
+```{r summary}
+summary(lg)
+```
+In the second row of the _Coefficient_ output, we can see that the two sided t test gives p-value 9.38e-10, follows by 3 significant stars. We can now conclude that displacement significantly contributes to the variance of fuel consumption.
+
+### (2) Multiple Linear Regression: Example
+
+Now that we know displacement is significantly correlated with vehicle fuel consumption, we want to explore the relation between displacement and fuel consumption while adjusting for Weight(1000 Ibs). We put in the formula with new explanatory variable, _mtcars$wt_ in the model and re-run the function and the summary:
+```{r mlr}
+lg2 = lireg(mtcars$mpg ~ mtcars$disp + mtcars$wt)
+summary(lg2)
+```
+From the summary it shows that the p-value under displacement is 0.06362 > 0.05, and that displacement is not significantly correlated with vehicle fuel consumption adjusting for the weight.
+
+### (3) In comparison with R base function lm()
+
+```{r benchmark, results='hide'}
+mdl = mtcars$mpg ~ mtcars$disp + mtcars$wt
+#check the coefficients
+res_coef = bench::mark(coef(lireg(mdl)), coef(lm(mdl)))
+```
+And here are the results:
+```{r summary_benchmark}
+summary(res_coef)
 ```

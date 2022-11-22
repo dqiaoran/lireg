@@ -54,7 +54,7 @@ lireg <- function(formula){
 
 fit_mlr <- function(object){
   z = object
-  X = z$regressor
+  X = as.matrix(z$regressor)
   Y = z$response
   z$design_mat = cbind(rep(1, z$num_cases), X)
   eva_mat = t(z$design_mat) %*% z$design_mat
@@ -112,7 +112,7 @@ summary.lireg <- function(object){
   ans$df = c(lg$num_vars, lg$num_cases - lg$num_vars)
 
   ans$Rsq = lg$SSR["value"] / lg$SSY["value"]
-  ans$Rsq_adj = 1 - lg$SSE[1L] / lg$SSE[2L] / lg$SSY[1L] / lg$SSY[2L]
+  ans$Rsq_adj = 1 - (lg$SSE[1L] / lg$SSE[2L]) / (lg$SSY[1L] / lg$SSY[2L])
   ans$fstat <- c(value = lg$SSR["value"] / lg$SSR["df"] / sigma_est,
                       numdf = lg$SSR["df"], dendf = lg$SSE["df"])
   print(ans)

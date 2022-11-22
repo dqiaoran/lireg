@@ -33,9 +33,7 @@
   \item{sigma}{the square root of the estimated variance of the random error
     \deqn{\hat\sigma^2 = \frac{1}{n-p}\sum_i{R_i^2},}{\sigma^2 = 1/(n-p) Sum(R[i]^2),}
     where \eqn{R_i}{R[i]} is the \eqn{i}-th residual, \code{residuals[i]}.}
-  \item{df}{degrees of freedom, a 3-vector \eqn{(p, n-p, p*)}, the first
-    being the number of non-aliased coefficients, the last being the total
-    number of coefficients.}
+  \item{df}{degrees of freedom, a 2-vector \eqn{(p, n-p)}, first being the total number of coefficients, and the second is the residual degree of freedom.}
   \item{fstat}{(for models including non-intercept terms)
     a 3-vector with the value of the F-statistic with
     its numerator and denominator degrees of freedom.}
