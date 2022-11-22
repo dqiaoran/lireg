@@ -1,5 +1,5 @@
 ---
-title: "Examples_lireg"
+title: "lireg"
 author: "Qiaoran Dong"
 date: "2022-11-19"
 output: html_document

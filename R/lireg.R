@@ -15,7 +15,7 @@
 library(Matrix)
 
 #'lireg
-#'Linear Regression Model
+#'Fitting Linear Models
 #'
 #'@param formula
 #'
@@ -43,7 +43,7 @@ lireg <- function(formula){
             response = Y, regressor = X,
             coefficients = rep(0, p), num_cases = n, num_vars = p,
             residuals = NULL, rank = 0, SSE = 0, SSR = 0, SSY = 0,
-            design_mat = NULL)
+            design_mat = NULL, Y_fitted = 0)
   class(lg) = "lireg"
 
   lg = fit_mlr(lg)
@@ -64,7 +64,7 @@ fit_mlr <- function(object){
   beta = solve(eva_mat)%*%t(z$design_mat)%*%Y
   z$coefficients = as.vector(beta)
 
-  Y_fitted = z$design_mat %*% beta #fitted values
+  z$Y_fitted = z$design_mat %*% beta #fitted values
 
   p = z$num_vars
   n = z$num_cases
