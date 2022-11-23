@@ -9,10 +9,15 @@
 }
 \usage{
 lireg(formula)
+
+\method{print}{lireg}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{formula}{an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted. Currently the package does not support polynomial regression, interaction, or variable with type "factor".}
+  \item{x}{an object of class "lireg", usually, a result of a call to lireg.}
+  \item{digits}{the number of significant digits to use when printing.}
+  \item{\dots}{further arguments passed to or from other methods.}
 }
 \details{
   Models for \code{lireg} are specified symbolically.  A typical model has the form \code{response ~ terms} where \code{response} is the (numeric) response vector and \code{terms} is a series of terms which specifies a linear predictor for \code{response}. A terms specification of the form \code{first + second} indicates all the terms in \code{first} together with all the terms in \code{second}. Currently the function does not support interaction (\code{first:second}) or cross (\code{first*second}).

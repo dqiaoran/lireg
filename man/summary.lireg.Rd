@@ -8,11 +8,16 @@
 \method{summary}{lireg}(object, ...)
 
 \method{print}{summary.lireg}(x, digits = max(3L, getOption("digits") - 3L),
-                   signif.stars = getOption("show.signif.stars"))
+                   signif.stars = getOption("show.signif.stars"), ...)
 }
 \arguments{
   \item{object}{an object of class \code{"lireg"}, usually, a result of a
     call to \code{\link{lireg}}.}
+  \item{x}{an object of class \code{"summary.lm"}, usually, a result of a
+    call to \code{summary.lm}.}
+  \item{digits}{the number of significant digits to use when printing.}
+  \item{signif.stars}{logical. If \code{TRUE}, \sQuote{significance stars}
+    are printed for each coefficient.}
   \item{\dots}{further arguments passed to or from other methods.}
 }
 \description{

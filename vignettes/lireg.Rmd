@@ -3,6 +3,10 @@ title: "lireg"
 author: "Qiaoran Dong"
 date: "2022-11-19"
 output: html_document
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Linear Regression fitting using lireg}
+  %\usepackage[UTF-8]{inputenc}
 ---
 
 ### Linear Regression fitting using *Lireg()*

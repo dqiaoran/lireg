@@ -1,6 +1,9 @@
 
+importFrom("stats", "coef", "model.frame", "pf", "printCoefmat", "pt",
+               "quantile", "terms")
 export(lireg)
 import(Matrix)
+import(bench)
 
 ## methods used by R itself.
 export(print.summary.lireg, summary.lireg, print.lireg)

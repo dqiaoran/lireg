@@ -79,7 +79,7 @@ fit_mlr <- function(object){
   return(z)
 }
 
-print.lireg <- function(x, digits = max(3L, getOption("digits") - 3L)){
+print.lireg <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   cat("\nCall:\n",
       paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
   if(length(x$coefficients)) {
@@ -119,7 +119,7 @@ summary.lireg <- function(object, ...){
 }
 
 print.summary.lireg <- function(x, digits = max(3L, getOption("digits") - 3L),
-                                signif.stars = getOption("show.signif.stars")){
+                                signif.stars = getOption("show.signif.stars"), ...){
   ans = x
   cat("\nCall:\n",
       paste(deparse(ans$call), sep="\n", collapse = "\n"), "\n\n", sep = "")
