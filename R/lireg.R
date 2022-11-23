@@ -14,14 +14,6 @@
 
 library(Matrix)
 
-#'lireg
-#'Fitting Linear Models
-#'
-#'@param formula
-#'
-#'@return a list of class "lireg"
-#'
-#'@examples
 lireg <- function(formula){
   df = model.frame(formula)
 
@@ -38,7 +30,6 @@ lireg <- function(formula){
     n = nrow(X)
     p = ncol(X) + 1
   }
-
   lg = list(call = match.call(), terms = terms(formula),
             response = Y, regressor = X,
             coefficients = rep(0, p), num_cases = n, num_vars = p,
